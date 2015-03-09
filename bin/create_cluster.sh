@@ -1,3 +1,4 @@
+
 # gdm-riak
 Initial test example using google deployment manager to manage a riak cluster.
 
@@ -5,8 +6,9 @@ Initial test example using google deployment manager to manage a riak cluster.
 This is still a work in progress. 
 
 
-# Setup
+# Create a cluster
 
 ```
-gcloud preview dm-v2 deployments create riak-cluster-test --config riak.yaml 
+sh bin/create_cluster.sh
+
 ```

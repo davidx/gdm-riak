@@ -1,0 +1,40 @@
+{% set RIAK_PRIMARY = "riakprimary-" + env["deployment"] %}
+{% set RIAK = "riak-" + env["deployment"] %}
+{% set FIREWALL = "application-fw-" + env["deployment"] %}
+{% set RIAK_PORT = 8098 %}
+
+resources:
+- name: {{ RIAK_PRIMARY }}
+  type: container_instance.py
+  properties:
+    zone: {{ properties["zone"] }}
+    dockerImage: {{ properties["dockerImage"] }}
+    containerImage: container-vm-v20141016
+    port: {{ RIAK_PORT }}
+
+- name: {{ RIAK }}
+  type: riak.py
+  properties:
+    zone: {{ properties["zone"] }}
+    dockerImage: {{ properties["dockerImage"] }}
+    containerImage: container-vm-v20141016
+    port: {{ RIAK_PORT }}
+
+    # Define the variables that are exposed to container as env variables.
+    dockerEnv:
+        RIAK_PORT: {{ RIAK_PORT }}
+        RIAK_AUTOMATIC_CLUSTERING: 1
+        SEED_PORT_8098_TCP_ADDR: $(ref.{{ RIAK_PRIMARY }}.networkInterfaces[0].networkIP)
+
+    # If left out will default to 1
+    size: 2
+    # If left out will default to 1
+    maxSize: 20
+
+- name: {{ FIREWALL }}
+  type: compute.v1.firewall
+  properties:
+    allowed:
+      - IPProtocol: TCP
+        ports: [ {{ RIAK_PORT }},8087,6000-7999,8099 ]
+    sourceRanges: [ 0.0.0.0/0 ]

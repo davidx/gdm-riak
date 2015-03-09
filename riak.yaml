@@ -1,0 +1,9 @@
+# Launches an autoscaled, load-balanced cluster of riak containers.
+# Uses customized hectcastro/riak docker image.
+imports: [ "riak.jinja", "riak.py", "container_instance_template.py", "container_instance.py", "container_helper.py"]
+resources:
+- name: riak_cluster 
+  type: riak.jinja
+  properties:
+    zone: us-central1-a
+    dockerImage: davidxd/riak
