@@ -12,6 +12,17 @@ This is still a work in progress.
 gcloud preview dm-v2 deployments create riak-cluster-test --config riak.yaml 
 ```
 
+```
+IP=`gcloud compute forwarding-rules list |tail -1 |awk '{print $3}'`
+curl -v http://${IP}:8098/stats 
+
+```
+
+## Admin
+Visit http://${IP}:8098/admin
+
+
+
 # Credits
 
 * Hector Castro for his great work creating the hectcastro/riak docker image.
